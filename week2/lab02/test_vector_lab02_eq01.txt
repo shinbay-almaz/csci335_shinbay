@@ -1,0 +1,11 @@
+# Test vector for Lab 2
+# Equation 1
+A1 B1 C1 True1
+0   0  0     0
+0   0  1     0
+0   1  0     1
+0   1  1     0
+1   0  0     1
+1   0  1     0
+1   1  0     0
+1   1  1     1
