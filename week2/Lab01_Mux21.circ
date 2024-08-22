@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project source="3.8.0" version="1.0">
+  This file is intended to be loaded by Logisim-evolution v3.8.0(https://github.com/logisim-evolution/).
+
+  <lib desc="#Wiring" name="0">
+    <tool name="Pin">
+      <a name="appearance" val="classic"/>
+    </tool>
+  </lib>
+  <lib desc="#Gates" name="1"/>
+  <lib desc="#Plexers" name="2"/>
+  <lib desc="#Arithmetic" name="3"/>
+  <lib desc="#Memory" name="4"/>
+  <lib desc="#I/O" name="5"/>
+  <lib desc="#TTL" name="6"/>
+  <lib desc="#TCL" name="7"/>
+  <lib desc="#Base" name="8"/>
+  <lib desc="#BFH-Praktika" name="9"/>
+  <lib desc="#Input/Output-Extra" name="10"/>
+  <lib desc="#Soc" name="11"/>
+  <main name="main"/>
+  <options>
+    <a name="gateUndefined" val="ignore"/>
+    <a name="simlimit" val="1000"/>
+    <a name="simrand" val="0"/>
+  </options>
+  <mappings>
+    <tool lib="8" map="Button2" name="Poke Tool"/>
+    <tool lib="8" map="Button3" name="Menu Tool"/>
+    <tool lib="8" map="Ctrl Button1" name="Menu Tool"/>
+  </mappings>
+  <toolbar>
+    <tool lib="8" name="Poke Tool"/>
+    <tool lib="8" name="Edit Tool"/>
+    <tool lib="8" name="Wiring Tool"/>
+    <tool lib="8" name="Text Tool"/>
+    <sep/>
+    <tool lib="0" name="Pin"/>
+    <tool lib="0" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+    </tool>
+    <sep/>
+    <tool lib="1" name="NOT Gate"/>
+    <tool lib="1" name="AND Gate"/>
+    <tool lib="1" name="OR Gate"/>
+    <tool lib="1" name="XOR Gate"/>
+    <tool lib="1" name="NAND Gate"/>
+    <tool lib="1" name="NOR Gate"/>
+    <sep/>
+    <tool lib="4" name="D Flip-Flop"/>
+    <tool lib="4" name="Register"/>
+  </toolbar>
+  <circuit name="main">
+    <a name="appearance" val="logisim_evolution"/>
+    <a name="circuit" val="main"/>
+    <a name="circuitnamedboxfixedsize" val="true"/>
+    <a name="simulationFrequency" val="1.0"/>
+    <comp lib="0" loc="(260,170)" name="Pin">
+      <a name="appearance" val="NewPins"/>
+      <a name="label" val="Sel"/>
+    </comp>
+    <comp lib="0" loc="(260,190)" name="Pin">
+      <a name="appearance" val="NewPins"/>
+      <a name="label" val="In1"/>
+    </comp>
+    <comp lib="0" loc="(260,240)" name="Pin">
+      <a name="appearance" val="NewPins"/>
+      <a name="label" val="In2"/>
+    </comp>
+    <comp lib="0" loc="(540,210)" name="Pin">
+      <a name="appearance" val="NewPins"/>
+      <a name="facing" val="west"/>
+      <a name="label" val="Out1"/>
+      <a name="output" val="true"/>
+    </comp>
+    <comp lib="1" loc="(320,170)" name="NOT Gate">
+      <a name="size" val="20"/>
+    </comp>
+    <comp lib="1" loc="(360,170)" name="NOT Gate">
+      <a name="size" val="20"/>
+    </comp>
+    <comp lib="1" loc="(430,180)" name="AND Gate">
+      <a name="size" val="30"/>
+    </comp>
+    <comp lib="1" loc="(430,230)" name="AND Gate">
+      <a name="size" val="30"/>
+    </comp>
+    <comp lib="1" loc="(500,210)" name="OR Gate">
+      <a name="size" val="30"/>
+    </comp>
+    <comp lib="8" loc="(227,52)" name="Text">
+      <a name="text" val="Almaz Shinbay Lab1 Simple MUX 22.08.2024"/>
+    </comp>
+    <wire from="(260,170)" to="(300,170)"/>
+    <wire from="(260,190)" to="(400,190)"/>
+    <wire from="(260,240)" to="(400,240)"/>
+    <wire from="(320,170)" to="(330,170)"/>
+    <wire from="(330,170)" to="(330,220)"/>
+    <wire from="(330,170)" to="(340,170)"/>
+    <wire from="(330,220)" to="(400,220)"/>
+    <wire from="(360,170)" to="(400,170)"/>
+    <wire from="(430,180)" to="(450,180)"/>
+    <wire from="(430,230)" to="(450,230)"/>
+    <wire from="(450,180)" to="(450,200)"/>
+    <wire from="(450,200)" to="(470,200)"/>
+    <wire from="(450,220)" to="(450,230)"/>
+    <wire from="(450,220)" to="(470,220)"/>
+    <wire from="(500,210)" to="(540,210)"/>
+  </circuit>
+</project>
