@@ -7,30 +7,42 @@
 // Include Verilator library.
 #include "verilated.h"
 
+#include "verilated_vcd_c.h"
+
 #include <iostream>
 
 int main(int argc, char **argv)
 {
-    Verilated::commandArgs(argc, argv);   // Initialize Verilator.
-    Vand_gate* and_gate = new Vand_gate;  // Create an instance of the AND gate module.
+  Verilated::commandArgs(argc, argv);   // Initialize Verilator.
+  Vand_gate* and_gate = new Vand_gate;  // Create an instance of the AND gate module.
 
-    // Apply test cases.
-    and_gate->a = 0; and_gate->b = 0;
-    and_gate->eval();   // Evaluate the model.
-    std::cout << "a=0, b=0 -> y=" << (int)and_gate->y << std::endl;
+  Verilated::traceEverOn(true);
+  VerilatedVcdC* vcd_trace = new VerilatedVcdC;
+  and_gate->trace(vcd_trace, 99);
+  vcd_trace->open("and_gate_trace.vcd");
 
-    and_gate->a = 0; and_gate->b = 1;
-    and_gate->eval();
-    std::cout << "a=0, b=1 -> y=" << (int)and_gate->y << std::endl;
+  // Apply test cases.
+  and_gate->a = 0; and_gate->b = 0;
+  and_gate->eval();   // Evaluate the model.
+  vcd_trace->dump(10);
+  std::cout << "a=0, b=0 -> y=" << (int)and_gate->y << std::endl;
 
-    and_gate->a = 1; and_gate->b = 0;
-    and_gate->eval();
-    std::cout << "a=1, b=0 -> y=" << (int)and_gate->y << std::endl;
+  and_gate->a = 0; and_gate->b = 1;
+  and_gate->eval();
+  vcd_trace->dump(20);
+  std::cout << "a=0, b=1 -> y=" << (int)and_gate->y << std::endl;
 
-    and_gate->a = 1; and_gate->b = 1;
-    and_gate->eval();
-    std::cout << "a=1, b=1 -> y=" << (int)and_gate->y << std::endl;
+  and_gate->a = 1; and_gate->b = 0;
+  and_gate->eval();
+  vcd_trace->dump(30);
+  std::cout << "a=1, b=0 -> y=" << (int)and_gate->y << std::endl;
 
-    delete and_gate;  // Free memory.
-    return 0;
+  and_gate->a = 1; and_gate->b = 1;
+  and_gate->eval();
+  vcd_trace->dump(40);
+  std::cout << "a=1, b=1 -> y=" << (int)and_gate->y << std::endl;
+
+  vcd_trace->close();
+  delete and_gate;  // Free memory.
+  return 0;
 }
