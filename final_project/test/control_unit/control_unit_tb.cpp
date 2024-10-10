@@ -69,8 +69,8 @@ int main(int argc, char **argv) {
   cout << "Applying reset..." << endl;
   control->reset = 1;
   control->clk = 0;
-  toggle_clock(); // Rising edge
-  toggle_clock(); // Falling edge
+  toggle_clock();
+  toggle_clock();
   control->reset = 0;
 
   for (int instr = 0; instr < (1 << 16); ++instr) {

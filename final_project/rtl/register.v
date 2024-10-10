@@ -1,5 +1,6 @@
 module register (
   input [15:0] d_in,
+  input [15:0] init_val,
   input reset,
   input clk, 
   input enable,
@@ -8,7 +9,7 @@ module register (
 
 always @ (posedge clk, posedge reset) begin
   if (reset)
-    d_out <= 16'd0;
+    d_out <= init_val;
   else begin
     if (enable) 
       d_out <= d_in;

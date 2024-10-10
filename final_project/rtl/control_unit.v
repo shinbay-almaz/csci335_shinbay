@@ -16,13 +16,23 @@ module control_unit (
 
   reg [1:0] current_state, next_state;
 
-  always @ (posedge clk or posedge reset) begin
+ /* always @ (posedge clk or posedge reset) begin
     if (reset) begin
       current_state <= State0;
     end else begin
       current_state <= next_state;
     end
-  end
+  end */
+ always @ (posedge clk or posedge reset) begin
+    if (reset) begin
+        current_state <= State0;
+ //       $display("Reset activated, entering State0");
+    end else begin
+        current_state <= next_state;
+ //       $display("Transitioning to state: %b", next_state);
+    end
+end
+
 
   always @ (*) begin
     if (run) begin

@@ -10,6 +10,7 @@ int main(int argc, char **argv) {
 
     // Reset the register
     reg->reset = 1;
+    reg->init_val = 0;
     reg->clk = 0;
     reg->enable = 0;
     reg->eval();  // Evaluate the register with reset
