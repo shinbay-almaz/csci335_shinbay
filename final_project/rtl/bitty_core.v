@@ -125,6 +125,11 @@ control_unit control(.instruction(regInst_out),
                 .en_6(en_6),
                 .en_7(en_7));
 
+monitor monitor(.done(done),
+                .instruction(regInst_out),
+                .written_value(regC_out));
+
+
 
 
 endmodule
