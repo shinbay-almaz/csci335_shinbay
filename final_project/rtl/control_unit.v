@@ -9,12 +9,14 @@ module control_unit (
   output reg en_i, en_s, en_c, en_0, en_1, en_2, en_3, en_4, en_5, en_6, en_7
 );
 
-  parameter State0 = 2'b00;
-  parameter State1 = 2'b01;
-  parameter State2 = 2'b10;
-  parameter State3 = 2'b11;
+  parameter State0 = 3'b000;
+  parameter State1 = 3'b001;
+  parameter State2 = 3'b010;
+  parameter State3 = 3'b011;
+  parameter State4 = 3'b100;
+  parameter State5 = 3'b101;
 
-  reg [1:0] current_state, next_state;
+  reg [2:0] current_state, next_state;
 
  /* always @ (posedge clk or posedge reset) begin
     if (reset) begin
@@ -47,6 +49,12 @@ end
           next_state = State3;
         end
         State3: begin
+          next_state = State4;
+        end
+        State4: begin
+          next_state = State5;
+        end
+        default: begin
           next_state = State0;
         end
       endcase
@@ -63,19 +71,19 @@ end
     alu_sel = 3'd0;
     done = 0;
     case (current_state)
-      State0: begin
+      State2: begin
         en_i = 1;
       end
-      State1: begin
+      State3: begin
         en_s = 1;
         mux_sel = instruction[15:13];
       end
-      State2: begin
+      State4: begin
         en_c = 1;
         mux_sel = instruction[12:10];
         alu_sel = instruction[4:2];
       end
-      State3: begin
+      State5: begin
         case (instruction[15:13])
           3'd0: en_0 = 1;
           3'd1: en_1 = 1;

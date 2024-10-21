@@ -22,20 +22,33 @@ bool check_control_signals(Vcontrol_unit* control, int state) {
   int done = control->done;
 
   switch (state) {
-    case 0: // State0: expect en_i = 1, others 0
+    case 0: 
+    case 1:
+      is_correct &= (en_i == 0 && en_s == 0 && en_c == 0);
+      is_correct &= (mux_sel == 0 && alu_sel == 0 && done == 0);
+      is_correct &= (en_0 == 0 && en_1 == 0 && en_2 == 0 && en_3 == 0);
+      is_correct &= (en_4 == 0 && en_5 == 0 && en_6 == 0 && en_7 == 0);
+      break;
+    case 2: // State0: expect en_i = 1, others 0
       is_correct &= (en_i == 1 && en_s == 0 && en_c == 0);
       is_correct &= (mux_sel == 0 && alu_sel == 0 && done == 0);
+      is_correct &= (en_0 == 0 && en_1 == 0 && en_2 == 0 && en_3 == 0);
+      is_correct &= (en_4 == 0 && en_5 == 0 && en_6 == 0 && en_7 == 0);
       break;
-    case 1: // State1: expect en_s = 1 and mux_sel = instruction[15:13]
+    case 3: // State1: expect en_s = 1 and mux_sel = instruction[15:13]
       is_correct &= (en_s == 1 && en_i == 0 && en_c == 0);
       is_correct &= (mux_sel == expected_mux_sel && done == 0);
+      is_correct &= (en_0 == 0 && en_1 == 0 && en_2 == 0 && en_3 == 0);
+      is_correct &= (en_4 == 0 && en_5 == 0 && en_6 == 0 && en_7 == 0);
       break;
-    case 2: // State2: expect en_c = 1, mux_sel = instruction[12:10], alu_sel = instruction[4:2]
+    case 4: // State2: expect en_c = 1, mux_sel = instruction[12:10], alu_sel = instruction[4:2]
       is_correct &= (en_c == 1 && en_i == 0 && en_s == 0);
       is_correct &= (mux_sel == ((control->instruction >> 10) & 0x7));
       is_correct &= (alu_sel == expected_alu_sel && done == 0);
+      is_correct &= (en_0 == 0 && en_1 == 0 && en_2 == 0 && en_3 == 0);
+      is_correct &= (en_4 == 0 && en_5 == 0 && en_6 == 0 && en_7 == 0);
       break;
-    case 3: // State3: expect correct enable signals based on instruction[15:13]
+    case 5: // State3: expect correct enable signals based on instruction[15:13]
       is_correct &= (done == 1);
       switch (expected_mux_sel) {
         case 0: is_correct &= en_0 == 1; break;
@@ -66,18 +79,22 @@ int main(int argc, char **argv) {
     control->eval();              // Evaluate the register on clock edge
   };
 
+  auto do_clock_cycle = [&toggle_clock]() {
+    toggle_clock();
+    toggle_clock();
+  };
+
   cout << "Applying reset..." << endl;
   control->reset = 1;
   control->clk = 0;
-  toggle_clock();
-  toggle_clock();
+  do_clock_cycle();
   control->reset = 0;
 
   for (int instr = 0; instr < (1 << 16); ++instr) {
     control->instruction = instr;
     control->run = 1;
     // Simulate the control unit for 4 clock cycles (enough to move through the FSM)
-    for (int cycle = 0; cycle < 4; ++cycle) {
+    for (int cycle = 0; cycle < 6; ++cycle) {
       // Check correctness using the checker function
       bool correct = check_control_signals(control, cycle);
 
@@ -89,8 +106,7 @@ int main(int argc, char **argv) {
       if (control->done) {
         cout << "Done signal activated on instruction 0x" << hex << instr << endl;
       }
-      toggle_clock();
-      toggle_clock();
+      do_clock_cycle();
     }
   }
 
