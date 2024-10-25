@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     }
   };
 
-  // Apply different MUX select values (0 to 15)
+  // Apply different MUX select values (0 to 8)
   cout << "Testing MUX with different select inputs:" << endl;
   for (int i = 0; i < 8; ++i) {
     apply_mux_select(i);
