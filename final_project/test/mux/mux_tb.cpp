@@ -1,10 +1,10 @@
-#include "Vmux.h"  
-#include "verilated.h"
 #include <iostream>
+#include "Vmux.h"
+#include "verilated.h"
 
 using namespace std;
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   Verilated::commandArgs(argc, argv);
   Vmux* mux = new Vmux;
 
@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
   // Function to apply a MUX select value and print the result
   auto apply_mux_select = [&](int select) {
     mux->mux_sel = select;  // Apply the select input
-    mux->eval();           
+    mux->eval();
     cout << "MUX select = " << select << ", output = " << mux->out;
 
     // Check if the output is correct based on the selected input
@@ -52,4 +52,3 @@ int main(int argc, char **argv) {
 
   return 0;
 }
-
