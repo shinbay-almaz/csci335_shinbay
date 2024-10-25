@@ -10,7 +10,6 @@ int main(int argc, char **argv) {
 
     // Reset the register
     reg->reset = 1;
-    reg->init_val = 0;
     reg->clk = 0;
     reg->enable = 0;
     reg->eval();  // Evaluate the register with reset
@@ -33,7 +32,8 @@ int main(int argc, char **argv) {
     // Test the reset functionality
     cout << "Applying reset..." << endl;
     reg->reset = 1;
-    toggle_clock();  // Simulate clock with reset
+    toggle_clock();
+    toggle_clock(); // Simulate clock with reset
     cout << "d_out after reset: " << reg->d_out << endl;
 
     // Test without enabling (should retain value)
