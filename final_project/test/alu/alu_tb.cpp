@@ -41,9 +41,10 @@ uint16_t ALUOperation(uint16_t a, uint16_t b, int select) {
         case 2: return a & b;  
         case 3: return a | b; 
         case 4: return a ^ b;   
-        case 5: return (b < 16 ? (a << b) : 0);      
-        case 6: return (b < 16 ? (a >> b) : 0);      
-        case 7: return (a == b ? 0 : a > b ? 1 : 2);  
+        case 5: return a << (b & 0xF);      
+        case 6: return a >> (b & 0xF);      
+        case 7: return (a == b ? 0 : a > b ? 1 : 2);
+        default: return 0;
     }
 }
 
