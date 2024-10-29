@@ -1,8 +1,8 @@
-#include "BittyInstructionGenerator.h"
-#include <random>
 #include <ctime>
-#include <string>
 #include <iostream>
+#include <random>
+#include <string>
+#include "BittyInstructionGenerator.h"
 
 uint16_t BittyInstructionGenerator::Generate() {
   uint16_t instruction = 0;
@@ -20,6 +20,7 @@ uint16_t BittyInstructionGenerator::Generate() {
 using namespace std;
 
 int main(int argc, char** argv) {
+  srand(time(0));
   int N = stoi(argv[1]);
 
   BittyInstructionGenerator generator;
@@ -28,7 +29,7 @@ int main(int argc, char** argv) {
 
   for (int i = 0; i < N; i++) {
     uint16_t instruction = generator.Generate();
-    
+
     cout << hex << instruction << endl;
   }
 }

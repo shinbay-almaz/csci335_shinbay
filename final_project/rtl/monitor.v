@@ -7,8 +7,7 @@ module monitor (
 );
   
 always @(posedge done) begin
-  if (done)
-    compare_results(instruction, written_value);
+  compare_results(instruction, written_value);
 end
 
 endmodule
