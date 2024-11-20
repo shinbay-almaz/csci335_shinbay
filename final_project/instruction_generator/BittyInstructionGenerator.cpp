@@ -4,16 +4,27 @@
 #include <string>
 #include "BittyInstructionGenerator.h"
 
-uint16_t BittyInstructionGenerator::Generate() {
+uint16_t BittyInstructionGenerator::Generate(int N) {
   uint16_t instruction = 0;
-
-  uint16_t rx = rand() & 0x7;
-  uint16_t ry = rand() & 0x7;
-
-  uint16_t alu_sel = rand() & 0x7;
-
-  instruction = (rx << 13) + (ry << 10) + (alu_sel << 2);
-
+  uint16_t format = rand() % (2 + can_be_branch);
+  if (format == 0) {
+    uint16_t rx = rand() & 0x7;
+    uint16_t ry = rand() & 0x7;
+    uint16_t alu_sel = rand() & 0x7;
+    can_be_branch = (alu_sel == 7);
+    instruction = (rx << 13) + (ry << 10) + (alu_sel << 2) + format;
+  } else if (format == 1) {
+    uint16_t rx = rand() & 0x7;
+    uint16_t immediate = rand() & 0xFF;
+    uint16_t alu_sel = rand() & 0x7;
+    can_be_branch = (alu_sel == 7);
+    instruction = (rx << 13) + (immediate << 5) + (alu_sel << 2) + format;
+  } else {
+    uint16_t immediate = rand() % N;
+    uint16_t cond = rand() % 3;
+    can_be_branch = true;
+    instruction = (immediate << 4) + (cond << 2) + format; 
+  }
   return instruction;
 }
 
@@ -28,8 +39,7 @@ int main(int argc, char** argv) {
   freopen("instructions.txt", "w", stdout);
 
   for (int i = 0; i < N; i++) {
-    uint16_t instruction = generator.Generate();
-
+    uint16_t instruction = generator.Generate(N);
     cout << hex << instruction << endl;
   }
 }

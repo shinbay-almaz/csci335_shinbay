@@ -32,14 +32,16 @@ int main(int argc, char** argv) {
   freopen("instructions.txt", "r", stdin);
 
   // Compare each instruction from Instruction Fetch Unit and one from generated text file after each iteration
-  for (int iter = 0; iter < 256; iter++) {
+  int expected_out;
+  int i = 0;
+  while (cin >> hex >> expected_out) {
     // Instruction Fetch Unit should push PC address to Instruction Memory and return instruction at that address
     toggle_clock();  // Rising edge
     toggle_clock();  // Falling edge
 
     // Get expected instruction from generated text file
-    int expected_out;
-    cin >> hex >> expected_out;
+    // int expected_out;
+    // cin >> hex >> expected_out;
 
     cout << hex << expected_out << " " << hex << (int)ifu->out << endl;
     // Compare output of Instruction Fetch Unit and expected output

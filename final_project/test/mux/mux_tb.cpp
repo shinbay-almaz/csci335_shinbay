@@ -17,6 +17,7 @@ int main(int argc, char** argv) {
   mux->in5 = 5;
   mux->in6 = 6;
   mux->in7 = 7;
+  mux->in8 = 8;
 
   // Function to apply a MUX select value and print the result
   auto apply_mux_select = [&](int select) {
@@ -42,7 +43,7 @@ int main(int argc, char** argv) {
 
   // Apply different MUX select values (0 to 8)
   cout << "Testing MUX with different select inputs:" << endl;
-  for (int i = 0; i < 8; ++i) {
+  for (int i = 0; i < 9; ++i) {
     apply_mux_select(i);
   }
 
