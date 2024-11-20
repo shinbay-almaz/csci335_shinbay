@@ -25,7 +25,8 @@ int main(int argc, char** argv) {
   freopen("Instructions.txt", "r", stdin);
 
   // Compare each instruction fetched from generated text file and one fetched from Instruction Memory
-  for (int i = 0; i < 256; i++) {
+  int expected_instr, i = 0;
+  while (cin >> hex >> expected_instr) {
     // Set address to get instruction from Instruction Memory
     memory->addr = i;
 
@@ -34,8 +35,8 @@ int main(int argc, char** argv) {
     toggle_clock();  // Falling edge
 
     // Get expected instruction from generated text file
-    int expected_instr;
-    cin >> hex >> expected_instr;
+   // int expected_instr;
+   // cin >> hex >> expected_instr;
 
     // Print for debug purposes
     cout << "Instruction at address 0x" << hex << i << ":" << endl;
@@ -44,7 +45,19 @@ int main(int argc, char** argv) {
 
     // Check for consistency between generated text file and Instruction Memory
     assert(expected_instr == (int)memory->out);
+
+    i++;
   }
+  
+  memory->addr = i;
+  toggle_clock();
+  toggle_clock();
+
+  cout << "Instruction at address 0x" << hex << i << " (out of file) :" << endl;
+  cout << hex << (int)memory->out << " (Instruction Memory)" << endl;
+  
+  expected_instr = 0xFFFF;
+  assert(expected_instr == (int)memory->out);
 
   cout << "All addresses have been checked and no errors are found!" << endl;
 

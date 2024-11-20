@@ -5,7 +5,12 @@ module memory (
 );
   reg [15:0] instructions [0:255];
 
+  int i;
+
   initial begin
+    for (i = 0; i < 256; i = i + 1) begin
+      instructions[i] = 16'hffff;
+    end
     $readmemh("instructions.txt", instructions);
   end
 
