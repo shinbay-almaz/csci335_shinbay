@@ -6,20 +6,20 @@ using namespace std;
 
 BittyEmulator::BittyEmulator() {
   registers_ = vector<uint16_t>(8);
-
+  memory_ = vector<uint16_t>((1 << 16));
   PC = 0;
 
   ifstream is("instructions.txt");
 
   for (uint16_t instruction; is >> hex >> instruction;)
-    memory_.push_back(instruction);
+    instructions_.push_back(instruction);
 }
 
 uint16_t BittyEmulator::GetRegisterValue(uint16_t reg_num) {
   return registers_[reg_num];
 }
 
-void BittyEmulator::Evaluate(uint16_t instruction) {
+void BittyEmulator::EvaluateALUOperation(uint16_t instruction) {
   uint16_t format = (instruction & 0x3);
   uint16_t rx, ry;
   uint16_t rx_val, ry_val;
@@ -45,9 +45,6 @@ void BittyEmulator::Evaluate(uint16_t instruction) {
 
       select = (instruction >> 2) & 0x7;
       break;
-    }
-    case 2: {
-      return;
     }
     default: {
       std::cerr << instruction << std::endl;
@@ -87,25 +84,50 @@ void BittyEmulator::Evaluate(uint16_t instruction) {
 
   registers_[rx] = rx_val;
   last_ALU_result = rx_val;
+  PC = PC + 1;
 }
 
-uint8_t BittyEmulator::Branch(uint16_t instruction) {
+void BittyEmulator::CheckConditionAndJump(uint16_t instruction) {
   uint16_t format = instruction & 0x3;
   uint16_t cond = instruction >> 2 & 0x3;
 
+  PC = PC + 1;
   if (format == 2)
     if (cond == last_ALU_result)
-      return (instruction >> 4);
+      PC = (instruction >> 4);
+}
 
-  return PC + 1;
+void BittyEmulator::ReadAndWriteMemory(uint16_t instruction) {
+  uint16_t rx = instruction >> 13 & 0x7;
+  uitn16_t ry = instruction >> 10 & 0x7;
+
+  uint16_t is_write = instruction >> 2 & 0x1;
+
+  uint16_t mem_addr = GetRegisterValue(ry);
+
+  if (is_write)
+    memory_[mem_addr] = GetRegisterValue(rx);
+  else
+    registers_[rx] = GetMemoryValue(mem_addr);
+
+  PC = PC + 1;
 }
 
 uint16_t BittyEmulator::RunOneInstruction() {
-  uint16_t instruction = memory_[PC];
+  uint16_t instruction = instructions_[PC];
 
-  Evaluate(instruction);
+  uint16_t format = instruction & 0x3;
 
-  PC = Branch(instruction);
+  if (format < 2)
+    EvaluateALUOperation(instruction);
+  else if (format == 2)
+    CheckConditionAndJump(instruction);
+  else
+    ReadAndWriteMemory(instruction);
 
   return instruction;
+}
+
+uint16_t BittyEmulator::GetMemoryValue(uint16_t mem_addr) {
+  return memory_[mem_addr];
 }
