@@ -18,9 +18,14 @@ std::vector<int> parse_machine(uint16_t machine_code) {
     int immed = machine_code >> 5 & 0xFF;
     instruction.push_back(rx);
     instruction.push_back(immed);
-  } else {
+  } else if (instruction_type < 19) {
     int immed = machine_code >> 4 & 0xFFF;
     instruction.push_back(immed);
+  } else {
+    int rx = machine_code >> 13 & 0x7;
+    int ry = machine_code >> 10 & 0x7;
+    instruction.push_back(rx);
+    instruction.push_back(ry);
   }
   return instruction;
 }
@@ -28,7 +33,7 @@ std::vector<int> parse_machine(uint16_t machine_code) {
 uint16_t convert_to_machine(std::vector<int> instruction) {
   uint16_t machine_code = 0;
 
-  uint16_t format = instruction[0] < 8 ? 0 : (instruction[0] < 16 ? 1 : 2);
+  uint16_t format = instruction[0] < 8 ? 0 : (instruction[0] < 16 ? 1 : (instruction[0] < 19 ? 2 : 3));
   machine_code |= format;
 
   switch (format) {
@@ -49,6 +54,12 @@ uint16_t convert_to_machine(std::vector<int> instruction) {
       machine_code |= instruction[1] << 4;
       break;
     }
+    case 3: {
+      machine_code |= (instruction[0] - 19) << 2;
+      machine_code |= instruction[1] << 13;
+      machine_code |= instruction[2] << 10;
+      break;
+    }
     default: {
       break;
     }
@@ -65,6 +76,8 @@ int get_instruction_type_from_machine(uint16_t machine_code) {
       return (machine_code >> 2 & 0x7) + 8;
     case 2:
       return (machine_code >> 2 & 0x3) + 16;
+    case 3:
+      return (machine_code >> 2 & 0x1) + 19;
     default:
       return -1;
   }
@@ -90,8 +103,11 @@ std::vector<int> parse_assembly(std::string assembly_instruction) {
   } else if (instruction[0] < 16) {
     instruction.push_back(tokens[1][1] - '0');
     instruction.push_back(std::stoi(tokens[2].substr(1)));
-  } else {
+  } else if (instruction[0] < 19) {
     instruction.push_back(std::stoi(tokens[1].substr(1)));
+  } else {
+    instruction.push_back(tokens[1][1] - '0');
+    instruction.push_back(tokens[2][2] - '0');
   }
   return instruction;
 }
@@ -101,7 +117,8 @@ int get_instruction_type_from_assembly(std::string assembly_command) {
       {"add", 0},   {"sub", 1},  {"and", 2},   {"or", 3},    {"xor", 4},
       {"shl", 5},   {"shr", 6},  {"cmp", 7},   {"addi", 8},  {"subi", 9},
       {"andi", 10}, {"ori", 11}, {"xori", 12}, {"shli", 13}, {"shri", 14},
-      {"cmpi", 15}, {"bie", 16}, {"big", 17},  {"bil", 18}};
+      {"cmpi", 15}, {"bie", 16}, {"big", 17},  {"bil", 18},  {"ld", 19},
+      {"st", 20}};
   auto it = command_map.find(assembly_command);
   return it != command_map.end() ? it->second : -1;
 }
@@ -110,7 +127,7 @@ std::string get_assembly_command_from_type(int instruction_type) {
   static const std::vector<std::string> commands = {
       "add",  "sub",  "and",  "or",   "xor", "shl",  "shr",
       "cmp",  "addi", "subi", "andi", "ori", "xori", "shli",
-      "shri", "cmpi", "bie",  "big",  "bil"};
+      "shri", "cmpi", "bie",  "big",  "bil", "ld",   "st"};
   if (instruction_type >= commands.size())
     return "unknown";
   return commands[instruction_type];
@@ -122,17 +139,23 @@ std::string convert_to_assembly(std::vector<int> instruction) {
   assembly_instruction += get_assembly_command_from_type(instruction[0]);
   if (instruction[0] < 8) {
     assembly_instruction += " r";
-    assembly_instruction += (char) (instruction[1] + '0');
+    assembly_instruction += (char)(instruction[1] + '0');
     assembly_instruction += " r";
-    assembly_instruction += (char) (instruction[2] + '0');
+    assembly_instruction += (char)(instruction[2] + '0');
   } else if (instruction[0] < 16) {
     assembly_instruction += " r";
-    assembly_instruction += (char) (instruction[1] + '0');
+    assembly_instruction += (char)(instruction[1] + '0');
     assembly_instruction += " #";
     assembly_instruction += std::to_string(instruction[2]);
-  } else {
+  } else if (instruction[0] < 19) {
     assembly_instruction += " #";
     assembly_instruction += std::to_string(instruction[1]);
+  } else {
+    assembly_instruction += " r";
+    assembly_instruction += (char)(instruction[1] + '0');
+    assembly_instruction += " (r";
+    assembly_instruction += (char)(instruction[2] + '0');
+    assembly_instruction += ")";
   }
   return assembly_instruction;
 }
