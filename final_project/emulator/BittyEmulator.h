@@ -9,7 +9,7 @@ class BittyEmulator {
   uint16_t GetMemoryValue(uint16_t mem_addr);
   uint16_t RunOneInstruction();
   void CheckConditionAndJump(uint16_t instruction);
-  void ReadAndWriteMemory(utin16_t instruction);
+  void ReadAndWriteMemory(uint16_t instruction);
 
  private:
   std::vector<uint16_t> registers_;

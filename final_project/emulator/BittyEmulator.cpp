@@ -99,7 +99,7 @@ void BittyEmulator::CheckConditionAndJump(uint16_t instruction) {
 
 void BittyEmulator::ReadAndWriteMemory(uint16_t instruction) {
   uint16_t rx = instruction >> 13 & 0x7;
-  uitn16_t ry = instruction >> 10 & 0x7;
+  uint16_t ry = instruction >> 10 & 0x7;
 
   uint16_t is_write = instruction >> 2 & 0x1;
 

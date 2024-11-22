@@ -4,10 +4,11 @@ module bitty_core (
   input reset,
   input run,
   output reg done,
-  output reg [15:0] last_alu_result
+  output reg [15:0] last_alu_result,
+  output reg [15:0] mem_addr
 );
 
-reg en_i, en_s, en_c, en_0, en_1, en_2, en_3, en_4, en_5, en_6, en_7;
+reg en_i, en_s, en_c, en_0, en_1, en_2, en_3, en_4, en_5, en_6, en_7, en_m;
 reg [15:0] regI_out, regS_out, regC_out;
 reg [2:0] alu_sel;
 reg [3:0] mux_sel;
@@ -40,7 +41,7 @@ register reg_s(.clk(clk),
 register reg_c(.clk(clk),
                   .reset(reset),
                   .enable(en_c),
-                  .d_in(alu_out),
+                  .d_in(regC_in),
                   .d_out(regC_out));
 register reg_0(.clk(clk),
                   .reset(reset),
@@ -82,6 +83,26 @@ register reg_7(.clk(clk),
                   .enable(en_7),
                   .d_in(regC_out),
                   .d_out(reg7_out));
+register reg_m(.clk(clk),
+                  .reset(reset),
+                  .enable(en_m),
+                  .d_in(mux_out),
+                  .d_out(regM_out));
+
+reg [15:0] regM_out;
+reg [15:0] mem_out;
+reg read, write;
+reg mem_sel;
+reg [15:0] regC_in;
+
+assign mem_addr = regM_out;
+assign regC_in = mem_sel ? mem_out : alu_out;
+
+data_memory dm(.data_in(regS_out),
+               .data_out(mem_out),
+               .read(read),
+               .write(write),
+               .mem_addr(mux_out));
 
 alu alu(.in_a(regS_out),
         .in_b(mux_out),
@@ -106,7 +127,10 @@ control_unit control(.instruction(regI_out),
                     .en_5(en_5),
                     .en_6(en_6),
                     .en_7(en_7),
-                    .immediate(immediate));
+                    .immediate(immediate),
+                    .read(read),
+                    .write(write),
+                    .mem_sel(mem_sel), .en_m(en_m));
 
 // monitor monitor(.done(done), .instruction(instruction), .written_value(regC_out));
 

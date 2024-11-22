@@ -1,13 +1,13 @@
 #include <cstdint>
 #include <iostream>
-#include "Vmemory.h"
+#include "Vinstruction_memory.h"
 #include "verilated.h"
 
 using namespace std;
 
 int main(int argc, char** argv) {
   Verilated::commandArgs(argc, argv);
-  Vmemory* memory = new Vmemory;
+  Vinstruction_memory* memory = new Vinstruction_memory;
 
   // Set input signals of Instruction Memory to default
   memory->clk = 0;

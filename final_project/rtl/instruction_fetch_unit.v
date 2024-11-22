@@ -9,7 +9,7 @@ module instruction_fetch_unit (
 reg [7:0] cur_pc, next_pc;
 
 /* verilator lint_off WIDTHEXPAND */
-memory memory(.addr(cur_pc),
+instruction_memory imemory(.addr(cur_pc),
               .clk(clk),
               .out(out));
 
